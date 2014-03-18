@@ -8,14 +8,14 @@ class MPU6050 : public SensorBase, PIDSource {
         double PIDGet();
         
         enum Axes {kAxis_X=0x00, kAxis_Y=0x02, kAxis_Z=0x04};
-	    struct AllAxes
-	    {
-		    double XAxis;
-		    double YAxis;
-		    double ZAxis;
-	    };
+        struct AllAxes{
+            double XAxis;
+            double YAxis;
+            double ZAxis;
+        };
         
-        float GetAngle();
+        double GetAngle(Axes axis);
+        double GetRate(Axes axis);
         void Reset();
         
         double GetAcceleration(Axes axis);
