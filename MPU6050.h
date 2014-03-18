@@ -22,6 +22,7 @@ class MPU6050 : public SensorBase, PIDSource {
         AllAxes GetAccelerations();
     private:
         void InitGyro();
+        void InitImu();
     protected:
         I2C* m_i2c;
 	
