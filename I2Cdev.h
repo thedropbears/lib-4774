@@ -51,6 +51,7 @@ THE SOFTWARE.
 #include "WPILib.h"
 
 #define I2C_MODULE_NUMBER 1
+#define __arm__
 
 // 1000ms default read timeout (modify with "I2Cdev::readTimeout = [ms];")
 #define I2CDEV_DEFAULT_READ_TIMEOUT 1000
