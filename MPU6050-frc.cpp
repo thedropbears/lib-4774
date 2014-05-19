@@ -11,6 +11,10 @@ MPU6050_frc :: MPU6050_frc(){
     
 }
 
+MPU6050_frc :: MPU6050_frc(uint8_t address) : MPU6050(address){
+    MPU6050_frc();
+}
+
 double MPU6050_frc :: PIDGet() {
     return getRotationZ();
 }
