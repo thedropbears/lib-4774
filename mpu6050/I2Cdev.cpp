@@ -208,7 +208,6 @@ int8_t I2Cdev::readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8
    DigitalModule* module = DigitalModule::GetInstance(I2C_MODULE_NUMBER);
    I2C* i2c = module->GetI2C(devAddr);
    
-   
    bool aborted = i2c-> Read(regAddr, length, data);
    if (aborted){
        return -1;
@@ -226,17 +225,8 @@ int8_t I2Cdev::readBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8
 * @return Number of words read (-1 indicates failure)
 */
 int8_t I2Cdev::readWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t *data, uint16_t timeout) {
-    uint8_t tempdata [length*2];
-    int retval = readBytes(devAddr,regAddr, length*2, tempdata, timeout);
-    
-    for (int i = 0; i<length; ++i){
-        data[i] = tempdata[i*2];
-        data[i] = data[i] << 8;
-        data[i] += tempdata[i*2+1];
-    }
-    if (retval == -1) 
-        return retval;
-    return retval/2;
+    // Not implemented on cRIO.
+    return -1;
 }
 
 /** write a single bit in an 8-bit device register.
@@ -373,17 +363,8 @@ bool I2Cdev::writeBytes(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint8_
 * @return Status of operation (true = success)
 */
 bool I2Cdev::writeWords(uint8_t devAddr, uint8_t regAddr, uint8_t length, uint16_t* data) {
-    DigitalModule* module = DigitalModule::GetInstance(I2C_MODULE_NUMBER);
-    I2C* i2c = module->GetI2C(devAddr);
-    
-    for (int i =0; i < length; ++i){
-        bool success = i2c->Write(regAddr+i*2, data[i] >> 8)
-            && i2c->Write(regAddr+i*2+1, data[i] & 0xff);
-        if (!success) {
-            return false;
-        }
-    }
-    return true;
+    // Not implemented on cRIO.
+    return false;
 }
 
 /** Default timeout value for read operations.
