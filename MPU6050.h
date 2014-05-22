@@ -10,6 +10,8 @@ class MPU6050 : public SensorBase, public PIDSource, public ::MPU6050 {
 	    MPU6050();
         MPU6050(uint8_t address);
         virtual double PIDGet();
+    private:
+        virtual void run();
 };
 
 } // end namespace
