@@ -5,7 +5,7 @@ include_directories(${WPILib_INCLUDE_DIRS})
 
 add_library(lib-4774
   MPU6050.cpp
-  I2Cdev.cpp
-  MPU6050-frc.cpp
+  mpu6050/MPU6050.cpp
+  mpu6050/I2Cdev.cpp
 )
 
