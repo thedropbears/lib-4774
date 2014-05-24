@@ -1,3 +1,7 @@
+#define __arm__
+#define __PGMSPACE_H_
+#define delay(p) Wait(p)
+#include "mpu6050/MPU6050_6Axis_MotionApps20.h"
 #include "MPU6050.h"
 
 lib4774::MPU6050::MPU6050(){
