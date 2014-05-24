@@ -9,11 +9,12 @@ lib4774::MPU6050::MPU6050(){
     run();
 }
 
-lib4774::MPU6050::MPU6050(uint8_t address) : MPU6050(address << 1){
+lib4774::MPU6050::MPU6050(uint8_t address){
 	// We have to left shift the address by one because the WPI I2C
 	// library doesn't do it for us.
 	// It includes the R/W bit - so we need to account for it.
 	// I2C addresses are 7 bits, but WPILib assumes we have the full 8.
+    ::MPU6050(address << 1);
     run();
 }
 
