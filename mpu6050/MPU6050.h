@@ -865,8 +865,8 @@ class MPU6050 {
             uint8_t dmpGetExternalSensorData(int32_t *data, uint16_t size, const uint8_t* packet=0);
             uint8_t dmpGetEIS(int32_t *data, const uint8_t* packet=0);
             
-            uint8_t dmpGetEuler(float *data, Quaternion *q);
-            uint8_t dmpGetYawPitchRoll(float *data, Quaternion *q, VectorFloat *gravity);
+            uint8_t dmpGetEuler(double *data, Quaternion *q);
+            uint8_t dmpGetYawPitchRoll(double *data, Quaternion *q, VectorFloat *gravity);
 
             // Get Floating Point data from FIFO
             uint8_t dmpGetAccelFloat(float *data, const uint8_t* packet=0);
