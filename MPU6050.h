@@ -5,7 +5,7 @@
 #include "mpu6050/MPU6050.h"
 
 namespace lib4774 {
-class MPU6050 : public SensorBase, public PIDSource, public ::MPU6050 {
+class MPU6050 : public SensorBase, public PIDSource, public jrowberg::MPU6050 {
     public:
 	    MPU6050();
         MPU6050(uint8_t address);

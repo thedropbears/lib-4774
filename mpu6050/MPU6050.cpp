@@ -35,7 +35,7 @@ THE SOFTWARE.
 */
 
 #include "MPU6050.h"
-
+namespace jrowberg {
 /** Default constructor, uses default I2C address.
 * @see MPU6050_DEFAULT_ADDRESS
 */
@@ -3139,4 +3139,5 @@ uint8_t MPU6050::getDMPConfig2() {
 }
 void MPU6050::setDMPConfig2(uint8_t config) {
     I2Cdev::writeByte(devAddr, MPU6050_RA_DMP_CFG_2, config);
+}
 }

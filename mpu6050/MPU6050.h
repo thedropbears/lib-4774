@@ -404,7 +404,7 @@ THE SOFTWARE.
 #define MPU6050_DMP_MEMORY_CHUNK_SIZE 16
 
 // note: DMP code memory blocks defined at end of header file
-
+namespace jrowberg {
 class MPU6050 {
     public:
         MPU6050();
@@ -990,5 +990,6 @@ class MPU6050 {
         uint8_t devAddr;
         uint8_t buffer[14];
 };
+}
 
 #endif /* _MPU6050_H_ */
