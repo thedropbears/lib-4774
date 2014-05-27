@@ -1,5 +1,5 @@
 
-//#include "mpu6050/MPU6050_6Axis_MotionApps20.h"
+#include "mpu6050/MPU6050_6Axis_MotionApps20.h"
 #include "MPU6050.h"
 
 lib4774::MPU6050::MPU6050() : jrowberg::MPU6050(MPU6050_DEFAULT_ADDRESS << 1){
