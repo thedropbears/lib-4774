@@ -2,9 +2,6 @@
 #define MPU6050_LIB4774_h
 
 #include "WPILib.h"
-#define __arm__
-#define __PGMSPACE_H_
-#define delay(p) Wait(p)
 #include "mpu6050/MPU6050.h"
 
 namespace lib4774 {
