@@ -32,7 +32,6 @@ THE SOFTWARE.
 #ifndef _HELPER_3DMATH_H_
 #define _HELPER_3DMATH_H_
 
-namespace jrowberg {
 class Quaternion {
     public:
         float w;
@@ -213,5 +212,4 @@ class VectorFloat {
             return r;
         }
 };
-}
 #endif /* _HELPER_3DMATH_H_ */
