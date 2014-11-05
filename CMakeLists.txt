@@ -6,8 +6,6 @@ include_directories(${WPILib_INCLUDE_DIRS})
 add_definitions ("-Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-value ")
 
 add_library(lib-4774
-  MPU6050.cpp
-  mpu6050/MPU6050.cpp
-  mpu6050/I2Cdev.cpp
+  subsystems/UdpReceiver.cpp
 )
 

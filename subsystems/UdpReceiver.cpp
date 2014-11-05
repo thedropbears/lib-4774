@@ -17,6 +17,6 @@ void UdpReceiver::receiveBroadcast() {
 bool UdpReceiver::socketInit() {
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(sock == -1) // we have failed ot open a socket
-        return false
-    return true
+        return false;
+    return true;
 }
