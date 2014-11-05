@@ -9,16 +9,19 @@
 
 #include <WPILib.h>
 
+#define BUFFSIZE 1024
+
 class UdpReceiver: public Subsystem {
     public:
         int port;
         UdpReceiver(int initPort);
         ~UdpReceiver();
+        bool isBroadcastable();
     private:
         int sock;
-        string lastBroadcast;
+        bool broadcastable; // true if the socket is ready and we cajn broadcast
         void receiveBroadcast();
-        bool socketInit();
-        virtual int parseBroadcast() = 0; // int is error code return
+        void socketInit();
+        virtual int parseBroadcast(char* recvBuffer, int receivedBytes) = 0; // int is error code return
 };
 #endif
