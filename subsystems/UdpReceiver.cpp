@@ -1,7 +1,7 @@
 #include "UdpReceiver.h"
 
-UdpReceiver::UdpReceiver(int initPort, const char* name): Subsystem(name) {
-    port = initPort;
+UdpReceiver::UdpReceiver(int init_port, const char* name): Subsystem(name) {
+    port = init_port;
     socketInit();
 }
 
@@ -13,13 +13,13 @@ void UdpReceiver::receivePacket() {
     if(!broadcastable)
         socketInit();
 
-    char recvBuffer[BUFFSIZE];
-    int receivedBytes;
+    char recv_buffer[BUFFSIZE];
+    int received_bytes;
     if(broadcastable)
-        receivedBytes = recvfrom(sock, recvBuffer, BUFFSIZE, 0, NULL, NULL);
-    int parseFlag;
-    if(receivedBytes != -1)
-        parseFlag = parsePacket(recvBuffer, receivedBytes);
+        received_bytes = recvfrom(sock, recv_buffer, BUFFSIZE, 0, NULL, NULL);
+    int parse_flag;
+    if(received_bytes != -1)
+        parse_flag = parsePacket(recv_buffer, received_bytes);
 }
 
 void UdpReceiver::socketInit() {

@@ -16,7 +16,7 @@ class EyeBone: public UdpReceiver {
         double getTargetAngle();
     private:
         double parsed[5];
-        virtual int parseBroadcast(char* recvBuffer, int receivedBytes);
+        virtual int parseBroadcast(char* recv_buffer, int received_bytes);
 };
 
 #endif
