@@ -20,8 +20,8 @@ class UdpReceiver: public Subsystem {
     private:
         int sock;
         bool broadcastable; // true if the socket is ready and we cajn broadcast
-        void receiveBroadcast();
+        void receivePacket();
         void socketInit();
-        virtual int parseBroadcast(char* recvBuffer, int receivedBytes) = 0; // int is error code return
+        virtual int parsePacket(char* recvBuffer, int receivedBytes) = 0; // int is error code return
 };
 #endif

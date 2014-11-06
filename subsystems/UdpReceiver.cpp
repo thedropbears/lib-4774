@@ -9,7 +9,7 @@ UdpReceiver::~UdpReceiver() {
     close(sock);
 }
 
-void UdpReceiver::receiveBroadcast() {
+void UdpReceiver::receivePacket() {
     if(!broadcastable)
         socketInit();
 
@@ -19,7 +19,7 @@ void UdpReceiver::receiveBroadcast() {
         receivedBytes = recvfrom(sock, recvBuffer, BUFFSIZE, 0, NULL, NULL);
     int parseFlag;
     if(receivedBytes != -1)
-        parseFlag = parseBroadcast(recvBuffer, receivedBytes);
+        parseFlag = parsePacket(recvBuffer, receivedBytes);
 }
 
 void UdpReceiver::socketInit() {
