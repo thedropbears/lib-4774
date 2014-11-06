@@ -1,6 +1,6 @@
 #include "EyeBone.h"
 
-EyeBone::EyeBone(): UdpReceiver(PORT){
+EyeBone::EyeBone(): UdpReceiver(PORT, "EyeBone"){
 }
 
 EyeBone::~EyeBone() {

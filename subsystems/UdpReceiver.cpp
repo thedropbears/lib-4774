@@ -1,6 +1,6 @@
 #include "UdpReceiver.h"
 
-UdpReceiver::UdpReceiver(int initPort): Subsystem("UdpReceiver") {
+UdpReceiver::UdpReceiver(int initPort, const char* name): Subsystem(name) {
     port = initPort;
     socketInit();
 }
