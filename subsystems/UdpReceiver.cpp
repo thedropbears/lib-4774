@@ -1,7 +1,7 @@
 #include "UdpReceiver.h"
 
-UdpReceiver::UdpReceiver(int init_port, const char* name): Subsystem(name) {
-    port = init_port;
+UdpReceiver::UdpReceiver(int port, const char* name): Subsystem(name) {
+    this->port = port;
     socketInit();
 }
 

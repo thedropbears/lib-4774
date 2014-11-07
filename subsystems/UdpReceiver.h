@@ -14,7 +14,7 @@
 class UdpReceiver: public Subsystem {
     public:
         int port;
-        UdpReceiver(int init_port, const char* name);
+        UdpReceiver(int port, const char* name);
         ~UdpReceiver();
         bool isBroadcastable();
     private:
