@@ -1,8 +1,10 @@
 #include "DropBoneImu.h"
 
 #include <cstdlib>
+#include <cmath>
 
 DropBoneImu::DropBoneImu(int port): UdpReceiver(port, "DropBoneImu") {
+    offset = 0;
 }
 
 DropBoneImu::~DropBoneImu() {
@@ -39,9 +41,15 @@ double DropBoneImu::getYawAngle() {
 }
 
 double DropBoneImu::getYawRate() {
-    return parsed[5];
+    double yaw_angle;
+    yaw_angle = atan2(sin(parsed[0]-offset),cos(parsed[0]-offset));
+    return yaw_angle;
 }
 
 double DropBoneImu::PIDGet() {
     return getYawAngle();
+}
+
+void DropBoneImu::resetYaw() {
+    offset = parsed[0];
 }

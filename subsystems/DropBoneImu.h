@@ -17,8 +17,10 @@ class DropBoneImu: public UdpReceiver, public PIDSource {
         double* getQuat();
         double getYawAngle();
         double getYawRate();
-            virtual double PIDGet();
+        virtual double PIDGet();
+        void resetYaw();
     private:
+        double offset;
         double parsed[PARSEDLEN];
         virtual int parsePacket(char* recv_buffer, int received_bytes);
 };
