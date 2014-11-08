@@ -1,5 +1,7 @@
 #include "UdpReceiver.h"
 
+#include "../commands/ReceiveUdp.h"
+
 UdpReceiver::UdpReceiver(int port, const char* name): Subsystem(name) {
     this->port = port;
     socketInit();
@@ -46,4 +48,8 @@ void UdpReceiver::socketInit() {
 
 bool UdpReceiver::isBroadcastable() {
     return broadcastable;
+}
+
+void UdpReceiver::InitDefaultCommand() {
+    SetDefaultCommand(new ReceiveUdp(this));
 }

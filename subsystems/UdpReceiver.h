@@ -16,10 +16,11 @@ class UdpReceiver: public Subsystem {
         UdpReceiver(int port, const char* name);
         ~UdpReceiver();
         bool isBroadcastable();
+        void InitDefaultCommand();
+        void receivePacket();
     private:
         int sock;
         bool broadcastable; // true if the socket is ready and we cajn broadcast
-        void receivePacket();
         void socketInit();
         virtual int parsePacket(char* recv_buffer, int received_bytes) = 0; // int is error code return
 };
