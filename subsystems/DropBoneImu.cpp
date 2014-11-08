@@ -33,3 +33,15 @@ double* DropBoneImu::getAccel() {
 double* DropBoneImu::getQuat() {
     return parsed+9;
 }
+
+double DropBoneImu::getYawAngle() {
+    return parsed[0];
+}
+
+double DropBoneImu::getYawRate() {
+    return parsed[5];
+}
+
+double DropBoneImu::PIDGet() {
+    return getYawAngle();
+}

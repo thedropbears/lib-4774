@@ -7,7 +7,7 @@
 
 #define PARSEDLEN 13 // the length of the packets coming over udp
 
-class DropBoneImu: public UdpReceiver {
+class DropBoneImu: public UdpReceiver, public PIDSource {
     public:
         DropBoneImu(int port=PORT);
         ~DropBoneImu();
@@ -15,6 +15,9 @@ class DropBoneImu: public UdpReceiver {
         double* getGyro();
         double* getAccel();
         double* getQuat();
+        double getYawAngle();
+        double getYawRate();
+            virtual double PIDGet();
     private:
         double parsed[PARSEDLEN];
         virtual int parsePacket(char* recv_buffer, int received_bytes);
