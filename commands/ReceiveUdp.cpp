@@ -4,7 +4,7 @@ ReceiveUdp::ReceiveUdp(UdpReceiver* receiver):Command("ReceiveUdp") {
     this->receiver = receiver;
     Requires(receiver);
     SetInterruptible(false);
-    receiver->InitDefaultCommand();
+    SetRunWhenDisabled(true);
 }
 
 void ReceiveUdp::Initialize() {
