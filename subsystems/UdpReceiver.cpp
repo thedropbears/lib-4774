@@ -1,9 +1,10 @@
 #include "UdpReceiver.h"
 
-#include "../commands/ReceiveUdp.h"
+#include <commands/ReceiveUdp.h>
 
 UdpReceiver::UdpReceiver(int port, const char* name): Subsystem(name) {
     this->port = port;
+    noPacketCount = 0;
     socketInit();
 }
 
@@ -20,8 +21,12 @@ void UdpReceiver::receivePacket() {
     if(broadcastable)
         received_bytes = recvfrom(sock, recv_buffer, BUFFSIZE, 0, NULL, NULL);
     int parse_flag;
-    if(received_bytes != -1)
+    if(received_bytes != -1){
         parse_flag = parsePacket(recv_buffer, received_bytes);
+        noPacketCount = 0;
+    }
+    else
+        noPacketCount++;
 }
 
 void UdpReceiver::socketInit() {
@@ -52,4 +57,10 @@ bool UdpReceiver::isBroadcastable() {
 
 void UdpReceiver::InitDefaultCommand() {
     SetDefaultCommand(new ReceiveUdp(this));
+}
+
+bool UdpReceiver::timedOut() {
+    if(noPacketCount>= PACKETTIMEOUT)
+        return true;
+    return false;
 }

@@ -10,6 +10,8 @@
 
 #define BUFFSIZE 1024
 
+#define PACKETTIMEOUT 10
+
 class UdpReceiver: public Subsystem {
     public:
         int port;
@@ -18,8 +20,9 @@ class UdpReceiver: public Subsystem {
         bool isBroadcastable();
         void InitDefaultCommand();
         void receivePacket();
+        bool timedOut(); // return the number of calls to receive packet since we last got one
     private:
-        int sock;
+        int sock, noPacketCount;
         bool broadcastable; // true if the socket is ready and we cajn broadcast
         void socketInit();
         virtual int parsePacket(char* recv_buffer, int received_bytes) = 0; // int is error code return
