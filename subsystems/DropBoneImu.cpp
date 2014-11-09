@@ -13,7 +13,7 @@ DropBoneImu::~DropBoneImu() {
 int DropBoneImu::parsePacket(char* recv_buffer, int received_bytes) {
     char* end = recv_buffer;
     double next;
-    for(int i = 0; i < PARSEDLEN; i++){
+    for(int i = 0; i < BONE_PARSEDLEN; i++){
         next=strtod(end+1,&end);
         parsed[i] = next;
     }

@@ -3,13 +3,11 @@
 
 #include "UdpReceiver.h"
 
-#define PORT 4774 //the default port if no other is specified
-
-#define PARSEDLEN 13 // the length of the packets coming over udp
+#define BONE_PARSEDLEN 13 // the length of the packets coming over udp
 
 class DropBoneImu: public UdpReceiver, public PIDSource {
     public:
-        DropBoneImu(int port=PORT);
+        DropBoneImu(int port=4774);
         ~DropBoneImu();
         double* getEuler();
         double* getGyro();
@@ -21,7 +19,7 @@ class DropBoneImu: public UdpReceiver, public PIDSource {
         void resetYaw();
     private:
         double offset;
-        double parsed[PARSEDLEN];
+        double parsed[BONE_PARSEDLEN];
         virtual int parsePacket(char* recv_buffer, int received_bytes);
 };
 #endif
