@@ -2,10 +2,19 @@
 
 #include <commands/ReceiveUdp.h>
 
-UdpReceiver::UdpReceiver(int port, const char name[]): Subsystem(name) {
+static char beat[] = "1";
+
+UdpReceiver::UdpReceiver(int port, const char name[], const char* beat_dest): Subsystem(name) {
     this->port = port;
+    this->beat_dest = beat_dest;
     noPacketCount = 0;
     socketInit();
+    if(beat_dest[0] == '0' && beat_dest[1] != '.') {
+        beating = false;
+    } else {
+        beating = true;
+        time(&last_beat);
+    }
 }
 
 UdpReceiver::~UdpReceiver() {
@@ -13,14 +22,19 @@ UdpReceiver::~UdpReceiver() {
 }
 
 void UdpReceiver::receivePacket() {
-    if(!broadcastable)
+    if(!receiving)
         socketInit();
-    
-    subReceivePacket();
+
+    if(beating && difftime(time(NULL), last_beat) >= 1) {
+        if(sendBeat() > -1) {
+        } else {
+            receiving = false;
+        }
+    }
 
     char recv_buffer[BUFFSIZE];
     int received_bytes = -1;
-    if(broadcastable)
+    if(receiving)
         received_bytes = recvfrom(sock, recv_buffer, BUFFSIZE, 0, NULL, NULL);
     int parse_flag;
     if(received_bytes != -1){
@@ -41,7 +55,18 @@ void UdpReceiver::socketInit() {
     recvAddr.sin_port = htons(port);
     recvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     
-    subSocketInit();
+    if(beating) {
+        struct addrinfo hints, *res;
+    
+        hints.ai_family = AF_INET;
+        hints.ai_socktype = SOCK_DGRAM;
+        
+        sprintf(port_string, "%d", port);
+    
+        getaddrinfo(beat_dest, port_string, &hints, &res);
+    
+        beat_addr = res->ai_addr;
+    }
 
     struct timeval tv;
     tv.tv_sec = 0;
@@ -50,13 +75,18 @@ void UdpReceiver::socketInit() {
     bound = bind(sock, (struct sockaddr*) &recvAddr, sizeof recvAddr);
 
     if(sock == -1 || bound == -1 || timeopt == -1) // we have failed to create a socket
-        broadcastable = false;
+        receiving = false;
     else
-        broadcastable = true;
+        receiving = true;
 }
 
-bool UdpReceiver::isBroadcastable() {
-    return broadcastable;
+int UdpReceiver::sendBeat() {
+    int sent_bytes = sendto(sock, beat, sizeof beat, 0, beat_addr, sizeof *beat_addr);
+    return sent_bytes;
+}
+
+bool UdpReceiver::isReceiving() {
+    return receiving;
 }
 
 void UdpReceiver::InitDefaultCommand() {
