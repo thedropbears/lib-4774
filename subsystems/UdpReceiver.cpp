@@ -2,7 +2,7 @@
 
 #include <commands/ReceiveUdp.h>
 
-UdpReceiver::UdpReceiver(int port, const char* name): Subsystem(name) {
+UdpReceiver::UdpReceiver(int port, const char name[]): Subsystem(name) {
     this->port = port;
     noPacketCount = 0;
     socketInit();
@@ -15,6 +15,8 @@ UdpReceiver::~UdpReceiver() {
 void UdpReceiver::receivePacket() {
     if(!broadcastable)
         socketInit();
+    
+    subReceivePacket();
 
     char recv_buffer[BUFFSIZE];
     int received_bytes = -1;
@@ -38,6 +40,8 @@ void UdpReceiver::socketInit() {
     recvAddr.sin_family = AF_INET;
     recvAddr.sin_port = htons(port);
     recvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    
+    subSocketInit();
 
     struct timeval tv;
     tv.tv_sec = 0;

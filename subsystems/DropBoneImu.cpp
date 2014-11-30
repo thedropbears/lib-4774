@@ -3,8 +3,10 @@
 #include <cstdlib>
 #include <cmath>
 
-DropBoneImu::DropBoneImu(int port): UdpReceiver(port, "DropBoneImu") {
+
+DropBoneImu::DropBoneImu(int port): UdpReceiver(4774, name) {
     offset = 0;
+    time(&last_beat);
 }
 
 DropBoneImu::~DropBoneImu() {
@@ -21,6 +23,31 @@ int DropBoneImu::parsePacket(char* recv_buffer, int received_bytes) {
         parsed[i] = next;
     }
     return 0;
+}
+
+int DropBoneImu::sendBeat() {
+    int sent_bytes = sendto(sock, beat, sizeof beat, 0, beaglebone, sizeof *beaglebone);
+    return sent_bytes;
+}
+
+void DropBoneImu::subReceivePacket() {
+    if(difftime(time(NULL), last_beat) >= 1) {
+        if(sendBeat() > -1) {
+        } else {
+            broadcastable = false;
+        }
+    }
+}
+
+void DropBoneImu::subSocketInit() {
+    struct addrinfo hints, *res;
+    
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    
+    getaddrinfo(BEAGLEIP, BEAGLEBEATPORT, &hints, &res);
+    
+    beaglebone = res->ai_addr;
 }
 
 double* DropBoneImu::getEuler() {
