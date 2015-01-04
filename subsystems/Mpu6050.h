@@ -54,6 +54,9 @@ private:
 	int q_multiply(float* q1, float* q2, float* result);
 	int rescale_l(long* input, float* output, float scale_factor, char length);
 	int rescale_s(short* input, float* output, float scale_factor, char length);
+	void delay_ms(unsigned long num_ms);
+	void get_ms(unsigned long *count);
+	void reg_int_cb(struct int_param_s *);
 };
 
 #endif
