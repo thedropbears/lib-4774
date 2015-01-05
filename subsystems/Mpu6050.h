@@ -19,7 +19,7 @@
 #define THRESHOLD (0.1*PI/180.0)
 #define CALIBRATION_TIME 20.0
 
-class Mpu6050: public I2C, public Subsystem {
+class Mpu6050: public Subsystem {
 public:
 	// get information that we are getting from the mpu
 	Mpu6050(); //initialize
@@ -39,13 +39,13 @@ public:
 	double GetPitch();
 	double GetYaw();
 
-	double[] GetAccel();
-	double[] GetGyro();
-	double[] GetEuler();
+	double* GetAccel();
+	double* GetGyro();
+	double* GetEuler();
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z
-	double[] euler, accel, gyro;
+	double* euler_angles, accel, gyro;
 
 	void euler(float* q, float* euler_angles); // Convert quaternions to Euler angles
 	// Functions for setting gyro/accel orientation
@@ -58,5 +58,8 @@ private:
 	void get_ms(unsigned long *count);
 	void reg_int_cb(struct int_param_s *);
 };
+
+inline int min ( int a, int b );
+inline void __no_operation();
 
 #endif
