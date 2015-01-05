@@ -1,6 +1,8 @@
 #include "UdpReceiver.h"
 
-#include <commands/ReceiveUdp.h>
+#include "../commands/ReceiveUdp.h"
+
+#include <unistd.h>
 
 UdpReceiver::UdpReceiver(int port, const char* name): Subsystem(name) {
     this->port = port;

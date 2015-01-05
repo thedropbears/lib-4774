@@ -3,7 +3,7 @@
 
 #include <WPILib.h>
 
-#include <subsystems/UdpReceiver.h>
+#include "../subsystems/UdpReceiver.h"
 
 class ReceiveUdp: public Command {
     public:
