@@ -17,6 +17,8 @@ extern float quat_offset[4];
 extern int fd;
 extern signed char gyro_orientation[9];
 
+float angles[NOSENTVALS] = [ 0.0f ];
+
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	init();
     unsigned long timestamp;
@@ -51,7 +53,6 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 				continue;
 			}
 
-			float angles[NOSENTVALS];
 			rescale_l(quat, angles+9, QUAT_SCALE, 4);
 
 			if (!quat_offset[0]) {
@@ -87,7 +88,6 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 				euler(angles+9, angles);
 				//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
 				// send the values in angles over UDP as a string (in udp.c/h)
-				udp_send(angles, 13);
 			}
 		}
 	}
@@ -122,25 +122,25 @@ double Mpu6050::GetZGyro() {
 }
 
 double Mpu6050::GetRoll() {
-	return euler[0];
+	return angles[2];
 }
 
 double Mpu6050::GetPitch() {
-	return euler[1];
+	return angles[1];
 }
 
 double Mpu6050::GetYaw() {
-	return euler[2];
+	return angles[0];
 }
 
 double* Mpu6050::GetAccel() {
-	return accel;
+	return euler+6;
 }
 
 double* Mpu6050::GetGyro() {
-	return gyro;
+	return angles+3;
 }
 
 double* Mpu6050::GetEuler() {
-	return euler_angles;
+	return angles;
 }
