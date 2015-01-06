@@ -17,7 +17,7 @@ extern float quat_offset[4];
 extern int fd;
 extern signed char gyro_orientation[9];
 
-float angles[NOSENTVALS] = [ 0.0f ];
+float angles[NOSENTVALS];
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	init();
@@ -96,51 +96,51 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 Mpu6050::~Mpu6050() {
 }
 
-double Mpu6050::GetXAccel() {
+float Mpu6050::GetXAccel() {
 	return accel[0];
 }
 
-double Mpu6050::GetYAccel() {
+float Mpu6050::GetYAccel() {
 	return accel[1];
 }
 
-double Mpu6050::GetZAccel() {
+float Mpu6050::GetZAccel() {
 	return accel[2];
 }
 
-double Mpu6050::GetXGyro() {
+float Mpu6050::GetXGyro() {
 	return gyro[0];
 
 }
 
-double Mpu6050::GetYGyro() {
+float Mpu6050::GetYGyro() {
 	return gyro[1];
 }
 
-double Mpu6050::GetZGyro() {
+float Mpu6050::GetZGyro() {
 	return gyro[2];
 }
 
-double Mpu6050::GetRoll() {
+float Mpu6050::GetRoll() {
 	return angles[2];
 }
 
-double Mpu6050::GetPitch() {
+float Mpu6050::GetPitch() {
 	return angles[1];
 }
 
-double Mpu6050::GetYaw() {
+float Mpu6050::GetYaw() {
 	return angles[0];
 }
 
-double* Mpu6050::GetAccel() {
+float* Mpu6050::GetAccel() {
 	return euler+6;
 }
 
-double* Mpu6050::GetGyro() {
+float* Mpu6050::GetGyro() {
 	return angles+3;
 }
 
-double* Mpu6050::GetEuler() {
+float* Mpu6050::GetEuler() {
 	return angles;
 }

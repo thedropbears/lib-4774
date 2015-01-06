@@ -22,21 +22,21 @@ public:
 	Mpu6050(); //initialize
 	~Mpu6050();
 
-	double GetXAccel();
-	double GetYAccel();
-	double GetZAccel();
+	float GetXAccel();
+	float GetYAccel();
+	float GetZAccel();
 
-	double GetXGyro();
-	double GetYGyro();
-	double GetZGyro();
+	float GetXGyro();
+	float GetYGyro();
+	float GetZGyro();
 
-	double GetRoll();
-	double GetPitch();
-	double GetYaw();
+	float GetRoll();
+	float GetPitch();
+	float GetYaw();
 
-	double* GetAccel();
-	double* GetGyro();
-	double* GetEuler();
+	float* GetAccel();
+	float* GetGyro();
+	float* GetEuler();
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z
