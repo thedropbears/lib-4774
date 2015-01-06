@@ -111,10 +111,10 @@ void reg_int_cb(struct int_param_s *param){
 
 }
 
-int min ( int a, int b ){
+inline int min ( int a, int b ){
     return a < b ? a : b;
 }
-void __no_operation(){
+inline void __no_operation(){
 
 }
 
