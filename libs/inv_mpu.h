@@ -18,9 +18,6 @@
  *                  MPU9250 (or MPU6500 w/ AK8963 on the auxiliary bus)
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifndef _INV_MPU_H_
 #define _INV_MPU_H_
@@ -133,7 +130,3 @@ int mpu_run_6500_self_test(long *gyro, long *accel, unsigned char debug);
 int mpu_register_tap_cb(void (*func)(unsigned char, unsigned char));
 
 #endif  /* #ifndef _INV_MPU_H_ */
-
-#ifdef __cplusplus
-}
-#endif

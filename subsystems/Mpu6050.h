@@ -40,6 +40,7 @@ public:
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z
-	double* euler_angles, accel, gyro;
+    short accel[3], gyro[3], sensors[1];
+    long quat[4];
 };
 #endif

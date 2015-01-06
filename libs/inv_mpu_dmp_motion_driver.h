@@ -15,10 +15,6 @@
  *                  differentiate among MPL and general driver function calls.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef _INV_MPU_DMP_MOTION_DRIVER_H_
 #define _INV_MPU_DMP_MOTION_DRIVER_H_
 
@@ -99,7 +95,3 @@ int dmp_read_fifo(short *gyro, short *accel, long *quat,
     unsigned long *timestamp, short *sensors, unsigned char *more);
 
 #endif  /* #ifndef _INV_MPU_DMP_MOTION_DRIVER_H_ */
-
-#ifdef __cplusplus
-}
-#endif

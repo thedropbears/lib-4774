@@ -22,28 +22,20 @@ int init(){
     open_bus();
     unsigned char whoami=0;
     i2c_read(MPU6050_ADDR, MPU6050_WHO_AM_I, 1, &whoami);
-    if(!silent_flag) {
-        printf("WHO_AM_I: %x\n", whoami);
-    }
+    printf("WHO_AM_I: %x\n", whoami);
     struct int_param_s int_param;
-    if(!silent_flag) {
-        printf("MPU init: %i\n", mpu_init(&int_param));
-        printf("MPU sensor init: %i\n", mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL));
-        printf("MPU configure fifo: %i\n", mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL));
-        printf("DMP firmware: %i\n ",dmp_load_motion_driver_firmware());
-        printf("DMP orientation: %i\n ",dmp_set_orientation(
-            inv_orientation_matrix_to_scalar(gyro_orientation)));
-    }
+    printf("MPU init: %i\n", mpu_init(&int_param));
+    printf("MPU sensor init: %i\n", mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL));
+    printf("MPU configure fifo: %i\n", mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL));
+    printf("DMP firmware: %i\n ",dmp_load_motion_driver_firmware());
+    printf("DMP orientation: %i\n ",dmp_set_orientation(
+        inv_orientation_matrix_to_scalar(gyro_orientation)));
     unsigned short dmp_features = DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_TAP | DMP_FEATURE_SEND_RAW_ACCEL | DMP_FEATURE_SEND_CAL_GYRO | DMP_FEATURE_GYRO_CAL;
-    if(!silent_flag) {
-        printf("DMP feature enable: %i\n", dmp_enable_feature(dmp_features));
-        printf("DMP set fifo rate: %i\n", dmp_set_fifo_rate(DEFAULT_MPU_HZ));
-        printf("DMP enable %i\n", mpu_set_dmp_state(1));
-    }
-    if(!no_interrupt_flag) {
-        mpu_set_int_level(1); // Interrupt is low when firing
-        dmp_set_interrupt_mode(DMP_INT_CONTINUOUS); // Fire interrupt on new FIFO value
-	}
+    printf("DMP feature enable: %i\n", dmp_enable_feature(dmp_features));
+    printf("DMP set fifo rate: %i\n", dmp_set_fifo_rate(DEFAULT_MPU_HZ));
+    printf("DMP enable %i\n", mpu_set_dmp_state(1));
+    mpu_set_int_level(1); // Interrupt is low when firing
+    dmp_set_interrupt_mode(DMP_INT_CONTINUOUS); // Fire interrupt on new FIFO value
     return 0;
 }
 
@@ -181,9 +173,7 @@ void advance_spinner() {
     static char bars[] = { '/', '-', '\\', '|' };
     static int nbars = sizeof(bars) / sizeof(char);
     static int pos = 0;
-    if(!silent_flag) {
-        printf("%c\b", bars[pos]);
-    }
+    printf("%c\b", bars[pos]);
     fflush(stdout);
     pos = (pos + 1) % nbars;
 }

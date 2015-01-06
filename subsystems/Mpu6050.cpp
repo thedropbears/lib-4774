@@ -19,12 +19,7 @@ extern signed char gyro_orientation[9];
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	init();
-}
-
-Mpu6050::~Mpu6050() {
-	short accel[3], gyro[3], sensors[1];
-	long quat[4];
-	unsigned long timestamp;
+    unsigned long timestamp;
 	unsigned char more[0];
 	struct pollfd fdset[1];
 	char buf[1];
@@ -39,22 +34,16 @@ Mpu6050::~Mpu6050() {
 	time_t sec, current_time; // set to the time before calibration
 
 	time(&sec);
-	if(!silent_flag) {
-		printf("Read system time\n");
-		printf("Calibrating\n");
-	}
+	printf("Read system time\n");
+	printf("Calibrating\n");
 
 	while (1){
 		// Blocking poll to wait for an edge on the interrupt
-		if(!no_interrupt_flag) {
-			poll(fdset, 1, -1);
-		}
+		poll(fdset, 1, -1);
 
-		if (no_interrupt_flag || fdset[0].revents & POLLPRI) {
+		if (fdset[0].revents & POLLPRI) {
 			// Read the file to make it reset the interrupt
-			if(!no_interrupt_flag) {
 				read(fdset[0].fd, buf, 1);
-			}
 
 			int fifo_read = dmp_read_fifo(gyro, accel, quat, &timestamp, sensors, more);
 			if (fifo_read != 0) {
@@ -75,10 +64,8 @@ Mpu6050::~Mpu6050() {
 						&& fabs(last_euler[1]-angles[1]) < THRESHOLD
 						&& fabs(last_euler[2]-angles[2]) < THRESHOLD)
 						|| difftime(current_time, sec) > CALIBRATION_TIME) {
-					if(!silent_flag) {
-						printf("\nCALIBRATED! Threshold: %f Elapsed time: %f\n", CALIBRATION_TIME, difftime(current_time, sec));
-						printf("CALIBRATED! Threshold: %.5f Errors: %.5f %.5f %.5f\n", THRESHOLD, fabs(last_euler[0]-angles[0]), last_euler[1]-angles[1], last_euler[2]-angles[2]);
-					}
+					printf("\nCALIBRATED! Threshold: %f Elapsed time: %f\n", CALIBRATION_TIME, difftime(current_time, sec));
+					printf("CALIBRATED! Threshold: %.5f Errors: %.5f %.5f %.5f\n", THRESHOLD, fabs(last_euler[0]-angles[0]), last_euler[1]-angles[1], last_euler[2]-angles[2]);
 					// the IMU has finished calibrating
 					int i;
 					quat_offset[0] = angles[9]; // treat the w value separately as it does not need to be reversed
@@ -98,16 +85,15 @@ Mpu6050::~Mpu6050() {
 				rescale_s(accel, angles+6, ACCEL_SCALE, 3);
 				// turn the quaternation (that is already in angles) into euler angles and store it in the angles array
 				euler(angles+9, angles);
-				if(!silent_flag && verbose_flag) {
-					printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
-				}
+				//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
 				// send the values in angles over UDP as a string (in udp.c/h)
-				if(!no_broadcast_flag) {
-					udp_send(angles, 13);
-				}
+				udp_send(angles, 13);
 			}
 		}
 	}
+}
+
+Mpu6050::~Mpu6050() {
 }
 
 double Mpu6050::GetXAccel() {
@@ -119,7 +105,7 @@ double Mpu6050::GetYAccel() {
 }
 
 double Mpu6050::GetZAccel() {
-	return accel[2]
+	return accel[2];
 }
 
 double Mpu6050::GetXGyro() {

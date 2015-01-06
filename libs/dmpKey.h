@@ -4,10 +4,6 @@
  $
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef DMPKEY_H__
 #define DMPKEY_H__
 
@@ -497,7 +493,3 @@ typedef struct {
 
 
 #endif // DMPKEY_H__
-
-#ifdef __cplusplus
-}
-#endif
