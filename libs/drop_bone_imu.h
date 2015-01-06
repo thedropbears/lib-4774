@@ -1,7 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef drop_bone_imu_h
 #define drop_bone_imu_h
 
@@ -79,8 +75,4 @@ unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx);
 
 void advance_spinner();
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif

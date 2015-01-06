@@ -10,7 +10,8 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <time.h>
-#include "../libs/drop_bone_imu.h"
+
+extern "C" { #include "../libs/drop_bone_imu.h" }
 
 extern float last_euler[3];
 extern float quat_offset[4];
