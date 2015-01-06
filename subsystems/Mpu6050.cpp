@@ -134,7 +134,7 @@ float Mpu6050::GetYaw() {
 }
 
 float* Mpu6050::GetAccel() {
-	return euler+6;
+	return angles+6;
 }
 
 float* Mpu6050::GetGyro() {

@@ -253,6 +253,4 @@
 #define DMP_BLPFNMYL    506
 #define DMP_BLPFNMZH    508
 #define DMP_BLPFNMZL    510
-#ifdef __cplusplus
-}
 #endif // DMPMAP_H
