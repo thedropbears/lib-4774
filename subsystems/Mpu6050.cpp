@@ -10,125 +10,104 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <time.h>
+#include "../libs/drop_bone_imu.h"
+
+extern float last_euler[3];
+extern float quat_offset[4];
+extern int fd;
+extern signed char gyro_orientation[9];
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
-
+	init();
 }
 
 Mpu6050::~Mpu6050() {
+	short accel[3], gyro[3], sensors[1];
+	long quat[4];
+	unsigned long timestamp;
+	unsigned char more[0];
+	struct pollfd fdset[1];
+	char buf[1];
 
-}
+	// File descriptor for the GPIO interrupt pin
+	int gpio_fd = open(GPIO_INT_FILE, O_RDONLY | O_NONBLOCK);
 
-int Mpu6050::getData() {
-	// get the data over i2c
-}
+	// Create an event on the GPIO value file
+	memset((void*)fdset, 0, sizeof(fdset));
+	fdset[0].fd = gpio_fd;
+	fdset[0].events = POLLPRI;
+	time_t sec, current_time; // set to the time before calibration
 
-int Mpu6050::open_bus() {
-    if ((fd = open(BBB_I2C_FILE, O_RDWR)) < 0) {
-        /* ERROR HANDLING: you can check errno to see what went wrong */
-        perror("Failed to open the i2c bus");
-        return 1;
-    }
-    if (ioctl(fd, I2C_SLAVE, MPU6050_ADDR) < 0) {
-        perror("Failed to acquire bus access and/or talk to slave.\n");
-        /* ERROR HANDLING; you can check errno to see what went wrong */
-        return 1;
-    }
-    return 0;
-}
+	time(&sec);
+	if(!silent_flag) {
+		printf("Read system time\n");
+		printf("Calibrating\n");
+	}
 
-// multiply two quaternions
-int Mpu6050::q_multiply(float* q1, float* q2, float* result) {
-    float tmp[4];
-    tmp[0] = q1[0]*q2[0] - q1[1]*q2[1] - q1[2]*q2[2] - q1[3]*q2[3];
-    tmp[1] = q1[0]*q2[1] + q1[1]*q2[0] + q1[2]*q2[3] - q1[3]*q2[2];
-    tmp[2] = q1[0]*q2[2] - q1[1]*q2[3] + q1[2]*q2[0] + q1[3]*q2[1];
-    tmp[3] = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[1] + q1[3]*q2[0];
-    memcpy(result, tmp, 4*sizeof(float));
-    return 0;
-}
+	while (1){
+		// Blocking poll to wait for an edge on the interrupt
+		if(!no_interrupt_flag) {
+			poll(fdset, 1, -1);
+		}
 
-// rescale an array of longs by scale factor into an array of floats
-int Mpu6050::rescale_l(long* input, float* output, float scale_factor, char length) {
-    int i;
-    for(i=0;i<length;++i)
-        output[i] = input[i] * scale_factor;
-    return 0;
-}
+		if (no_interrupt_flag || fdset[0].revents & POLLPRI) {
+			// Read the file to make it reset the interrupt
+			if(!no_interrupt_flag) {
+				read(fdset[0].fd, buf, 1);
+			}
 
-// rescale an array of shorts by scale factor into an array of floats
-int Mpu6050::rescale_s(short* input, float* output, float scale_factor, char length) {
-    int i;
-    for(i=0;i<length;++i)
-        output[i] = input[i] * scale_factor;
-    return 0;
-}
+			int fifo_read = dmp_read_fifo(gyro, accel, quat, &timestamp, sensors, more);
+			if (fifo_read != 0) {
+				//printf("Error reading fifo.\n");
+				continue;
+			}
 
-void Mpu6050::delay_ms(unsigned long num_ms){
+			float angles[NOSENTVALS];
+			rescale_l(quat, angles+9, QUAT_SCALE, 4);
 
-}
-void Mpu6050::get_ms(unsigned long *count){
-
-}
-void Mpu6050::reg_int_cb(struct int_param_s *param){
-
-}
-
-inline int min ( int a, int b ){
-    return a < b ? a : b;
-}
-inline void __no_operation(){
-
-}
-
-void euler(float* q, float* euler_angles) {
-    euler_angles[0] = -atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1); // psi, yaw
-    euler_angles[1] = asin(2*q[1]*q[3] + 2*q[0]*q[2]); // phi, pitch
-    euler_angles[2] = -atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1); // theta, roll
-}
-
-// Functions for setting gyro/accel orientation
-unsigned short inv_row_2_scale(const signed char *row)
-{
-    unsigned short b;
-
-    if (row[0] > 0)
-        b = 0;
-    else if (row[0] < 0)
-        b = 4;
-    else if (row[1] > 0)
-        b = 1;
-    else if (row[1] < 0)
-        b = 5;
-    else if (row[2] > 0)
-        b = 2;
-    else if (row[2] < 0)
-        b = 6;
-    else
-        b = 7;      // error
-    return b;
-}
-
-unsigned short inv_orientation_matrix_to_scalar(
-        const signed char *mtx)
-{
-    unsigned short scalar;
-
-    /*
-       XYZ  010_001_000 Identity Matrix
-       XZY  001_010_000
-       YXZ  010_000_001
-       YZX  000_010_001
-       ZXY  001_000_010
-       ZYX  000_001_010
-     */
-
-    scalar = inv_row_2_scale(mtx);
-    scalar |= inv_row_2_scale(mtx + 3) << 3;
-    scalar |= inv_row_2_scale(mtx + 6) << 6;
-
-
-    return scalar;
+			if (!quat_offset[0]) {
+				advance_spinner(); // Heartbeat to let the user know we are running"
+				euler(angles+9, angles); // Determine calibration based on settled Euler angles
+				// check if the IMU has finished calibrating
+				time(&current_time);
+				// check if more than CALIBRATION_TIME seconds has passed since calibration started
+				if((fabs(last_euler[0]-angles[0]) < THRESHOLD
+						&& fabs(last_euler[1]-angles[1]) < THRESHOLD
+						&& fabs(last_euler[2]-angles[2]) < THRESHOLD)
+						|| difftime(current_time, sec) > CALIBRATION_TIME) {
+					if(!silent_flag) {
+						printf("\nCALIBRATED! Threshold: %f Elapsed time: %f\n", CALIBRATION_TIME, difftime(current_time, sec));
+						printf("CALIBRATED! Threshold: %.5f Errors: %.5f %.5f %.5f\n", THRESHOLD, fabs(last_euler[0]-angles[0]), last_euler[1]-angles[1], last_euler[2]-angles[2]);
+					}
+					// the IMU has finished calibrating
+					int i;
+					quat_offset[0] = angles[9]; // treat the w value separately as it does not need to be reversed
+					for(i=1;i<4;++i){
+						quat_offset[i] = -angles[i+9];
+					}
+				}
+				else {
+					memcpy(last_euler, angles, 3*sizeof(float));
+				}
+			}
+			else {
+				q_multiply(quat_offset, angles+9, angles+9); // multiply the current quaternstion by the offset caputured above to re-zero the values
+				// rescale the gyro and accel values received from the IMU from longs that the
+				// it uses for efficiency to the floats that they actually are and store these values in the angles array
+				rescale_s(gyro, angles+3, GYRO_SCALE, 3);
+				rescale_s(accel, angles+6, ACCEL_SCALE, 3);
+				// turn the quaternation (that is already in angles) into euler angles and store it in the angles array
+				euler(angles+9, angles);
+				if(!silent_flag && verbose_flag) {
+					printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
+				}
+				// send the values in angles over UDP as a string (in udp.c/h)
+				if(!no_broadcast_flag) {
+					udp_send(angles, 13);
+				}
+			}
+		}
+	}
 }
 
 double Mpu6050::GetXAccel() {
