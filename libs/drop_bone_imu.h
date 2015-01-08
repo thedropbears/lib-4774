@@ -1,4 +1,3 @@
-
 #ifndef drop_bone_imu_h
 #define drop_bone_imu_h
 

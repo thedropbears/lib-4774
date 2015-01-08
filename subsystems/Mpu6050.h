@@ -3,9 +3,6 @@
 
 #include <WPILib.h>
 
-#include "../libs/inv_mpu_dmp_motion_driver.h"
-#include "../libs/inv_mpu.h"
-
 #define MPU6050 //imu driver needs this
 #define PORT 0
 #define MPU6050_ADDR 0x68
@@ -19,44 +16,31 @@
 #define THRESHOLD (0.1*PI/180.0)
 #define CALIBRATION_TIME 20.0
 
-class Mpu6050: public I2C, public Subsystem {
+class Mpu6050: public Subsystem {
 public:
 	// get information that we are getting from the mpu
 	Mpu6050(); //initialize
 	~Mpu6050();
 
-	int getData();
+	float GetXAccel();
+	float GetYAccel();
+	float GetZAccel();
 
-	double GetXAccel();
-	double GetYAccel();
-	double GetZAccel();
+	float GetXGyro();
+	float GetYGyro();
+	float GetZGyro();
 
-	double GetXGyro();
-	double GetYGyro();
-	double GetZGyro();
+	float GetRoll();
+	float GetPitch();
+	float GetYaw();
 
-	double GetRoll();
-	double GetPitch();
-	double GetYaw();
-
-	double[] GetAccel();
-	double[] GetGyro();
-	double[] GetEuler();
+	float* GetAccel();
+	float* GetGyro();
+	float* GetEuler();
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z
-	double[] euler, accel, gyro;
-
-	void euler(float* q, float* euler_angles); // Convert quaternions to Euler angles
-	// Functions for setting gyro/accel orientation
-	unsigned short inv_row_2_scale(const signed char *row);
-	unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx);
-	int q_multiply(float* q1, float* q2, float* result);
-	int rescale_l(long* input, float* output, float scale_factor, char length);
-	int rescale_s(short* input, float* output, float scale_factor, char length);
-	void delay_ms(unsigned long num_ms);
-	void get_ms(unsigned long *count);
-	void reg_int_cb(struct int_param_s *);
+    short accel[3], gyro[3], sensors[1];
+    long quat[4];
 };
-
 #endif
