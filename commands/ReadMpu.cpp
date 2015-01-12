@@ -8,19 +8,19 @@ ReadMpu::ReadMpu(Mpu6050* imu):Command("ReadMpu") {
     imu->UpdateValues();
 }
 
-void ReceiveUdp::Initialize() {
+void ReadMpu::Initialize() {
 }
 
-void ReceiveUdp::Execute() {
+void ReadMpu::Execute() {
 }
 
-bool ReceiveUdp::IsFinished() {
+bool ReadMpu::IsFinished() {
     return true;
 }
 
-void ReceiveUdp::End() {
+void ReadMpu::End() {
 }
 
-void ReceiveUdp::Interrupted() {
+void ReadMpu::Interrupted() {
     End();
 }
