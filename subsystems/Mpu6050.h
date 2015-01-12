@@ -38,7 +38,8 @@ public:
 	float* GetGyro();
 	float* GetEuler();
 
-	int ReadInterrupt();
+	int UpdateValues(); //
+	void Zero(); //reset the quaternion offset
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z

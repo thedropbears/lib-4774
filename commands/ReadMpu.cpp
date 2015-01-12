@@ -1,21 +1,21 @@
-#include "ReceiveUdp.h"
+#include "ReadMpu.h"
 
 ReadMpu::ReadMpu(Mpu6050* imu):Command("ReadMpu") {
     this->imu = imu;
     Requires(imu);
     SetInterruptible(false);
     SetRunWhenDisabled(true);
+    imu->UpdateValues();
 }
 
 void ReceiveUdp::Initialize() {
 }
 
 void ReceiveUdp::Execute() {
-    imu->ReadInterrupt();
 }
 
 bool ReceiveUdp::IsFinished() {
-    return false;
+    return true;
 }
 
 void ReceiveUdp::End() {
