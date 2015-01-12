@@ -54,7 +54,7 @@ int Mpu6050::UpdateValues() {
 }
 
 void Mpu6050::Zero() {
-	memcpy(quat_offset, quat);
+	memcpy(quat_offset, quat, 4);
 }
 
 float Mpu6050::GetXAccel() {
