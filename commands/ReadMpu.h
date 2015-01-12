@@ -9,6 +9,7 @@
 
 class ReadMpu: public Command {
     public:
+        ReadMpu();
         virtual void Initialize();
         virtual void Execute();
         virtual bool IsFinished();
