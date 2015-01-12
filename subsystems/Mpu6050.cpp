@@ -43,7 +43,9 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	printf("Read system time\n");
 	printf("Calibrating\n");
 
-	while (!quat_offset){
+	bool offset_flag = false;
+
+	while (!offset_flag){
 		poll(fdset, 1, -1);
 
 		if (fdset[0].revents & POLLPRI) {
@@ -65,6 +67,7 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 					for(i=1;i<4;++i){
 						quat_offset[i] = -angles[i+9];
 					}
+					offset_flag = true;
 				}
 				else {
 					memcpy(last_euler, angles, 3*sizeof(float));
@@ -104,6 +107,7 @@ int Mpu6050::ReadInterrupt() {
 		euler(angles+9, angles);
 		//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
 	}
+	return 0; //ok
 }
 
 float Mpu6050::GetXAccel() {
