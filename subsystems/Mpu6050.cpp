@@ -20,14 +20,15 @@ extern float quat_offset[4];
 extern int fd;
 extern signed char gyro_orientation[9];
 
+unsigned long timestamp;
+unsigned char more[0];
+struct pollfd fdset[1];
+char buf[1];
+
 float angles[NOSENTVALS];
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	init();
-    unsigned long timestamp;
-	unsigned char more[0];
-	struct pollfd fdset[1];
-	char buf[1];
 
 	// File descriptor for the GPIO interrupt pin
 	int gpio_fd = open(GPIO_INT_FILE, O_RDONLY | O_NONBLOCK);
@@ -42,22 +43,10 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	printf("Read system time\n");
 	printf("Calibrating\n");
 
-	while (1){
-		// Blocking poll to wait for an edge on the interrupt
+	while (!quat_offset){
 		poll(fdset, 1, -1);
 
 		if (fdset[0].revents & POLLPRI) {
-			// Read the file to make it reset the interrupt
-				read(fdset[0].fd, buf, 1);
-
-			int fifo_read = dmp_read_fifo(gyro, accel, quat, &timestamp, sensors, more);
-			if (fifo_read != 0) {
-				//printf("Error reading fifo.\n");
-				continue;
-			}
-
-			rescale_l(quat, angles+9, QUAT_SCALE, 4);
-
 			if (!quat_offset[0]) {
 				advance_spinner(); // Heartbeat to let the user know we are running"
 				euler(angles+9, angles); // Determine calibration based on settled Euler angles
@@ -81,22 +70,40 @@ Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 					memcpy(last_euler, angles, 3*sizeof(float));
 				}
 			}
-			else {
-				q_multiply(quat_offset, angles+9, angles+9); // multiply the current quaternstion by the offset caputured above to re-zero the values
-				// rescale the gyro and accel values received from the IMU from longs that the
-				// it uses for efficiency to the floats that they actually are and store these values in the angles array
-				rescale_s(gyro, angles+3, GYRO_SCALE, 3);
-				rescale_s(accel, angles+6, ACCEL_SCALE, 3);
-				// turn the quaternation (that is already in angles) into euler angles and store it in the angles array
-				euler(angles+9, angles);
-				//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
-				// send the values in angles over UDP as a string (in udp.c/h)
-			}
 		}
 	}
 }
 
 Mpu6050::~Mpu6050() {
+
+}
+
+int Mpu6050::ReadInterrupt() {
+	// Blocking poll to wait for an edge on the interrupt
+	poll(fdset, 1, -1);
+
+	if (fdset[0].revents & POLLPRI) {
+		// Read the file to make it reset the interrupt
+			read(fdset[0].fd, buf, 1);
+
+		int fifo_read = dmp_read_fifo(gyro, accel, quat, &timestamp, sensors, more);
+		if (fifo_read != 0) {
+			//printf("Error reading fifo.\n");
+			return fifo_read;
+		}
+
+		rescale_l(quat, angles+9, QUAT_SCALE, 4);
+
+		// offset the quaternion using the previously stored offset
+		q_multiply(quat_offset, angles+9, angles+9); // multiply the current quaternstion by the offset caputured above to re-zero the values
+		// rescale the gyro and accel values received from the IMU from longs that the
+		// it uses for efficiency to the floats that they actually are and store these values in the angles array
+		rescale_s(gyro, angles+3, GYRO_SCALE, 3);
+		rescale_s(accel, angles+6, ACCEL_SCALE, 3);
+		// turn the quaternation (that is already in angles) into euler angles and store it in the angles array
+		euler(angles+9, angles);
+		//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
+	}
 }
 
 float Mpu6050::GetXAccel() {
