@@ -45,5 +45,9 @@ private:
 	//euler is roll, pitch, yaw, other two are x, y, z
     short accel[3], gyro[3], sensors[1];
     long quat[4];
+
+    float quat_offset[4] = { 1.0F, 0.0F, 0.0F, 0.0F };
+
+    void euler();
 };
 #endif

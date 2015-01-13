@@ -16,7 +16,6 @@ extern "C" {
 }
 
 extern float last_euler[3];
-extern float quat_offset[4];
 extern int fd;
 extern signed char gyro_orientation[9];
 
@@ -51,6 +50,13 @@ int Mpu6050::UpdateValues() {
 	euler(angles+9, angles);
 	//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
 	return 0; //ok
+}
+
+void Mpu6050::euler(float* q, float* euler_angles) {
+    q_multiply(quat_offset, q, q);
+    euler_angles[0] = -atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1); // psi, yaw
+    euler_angles[1] = asin(2*q[1]*q[3] + 2*q[0]*q[2]); // phi, pitch
+    euler_angles[2] = -atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1); // theta, roll
 }
 
 void Mpu6050::Zero() {
