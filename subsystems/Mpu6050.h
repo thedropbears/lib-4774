@@ -48,6 +48,6 @@ private:
 
     float quat_offset[4] = { 1.0F, 0.0F, 0.0F, 0.0F };
 
-    void euler();
+    void euler(float* q, float* euler_angles);
 };
 #endif
