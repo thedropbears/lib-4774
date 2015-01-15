@@ -3,7 +3,7 @@
 
 #define MPU6050 // The Invensense Motion Driver code needs this
 
-#define BBB_I2C_FILE "/dev/i2c-1"
+#define BBB_I2C_FILE "/dev/i2c-2"
 
 #define MPU6050_ADDR 0x68
 #define MPU6050_WHO_AM_I 0x75
@@ -12,17 +12,12 @@
 
 #define PI 3.14159
 #define QUAT_SCALE (1.0/1073741824)
-#define GPIO_INT_FILE "/sys/class/gpio/gpio14/value" 
 
 #define GYRO_SCALE (PI/(180.0*16.384))
 
 #define ACCEL_SCALE (1.0/16384)
 
 #define NOSENTVALS 13 // the numver of values to be sent through UDP
-
-#define THRESHOLD (0.1*PI/180.0) // the amount that the IMU Euler values have to change less than to indicate that calibration has finished
-
-#define CALIBRATION_TIME 20.0
 
 #include "inv_mpu_dmp_motion_driver.h"
 #include "inv_mpu.h"

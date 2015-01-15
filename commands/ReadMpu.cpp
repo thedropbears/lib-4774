@@ -4,10 +4,10 @@ ReadMpu::ReadMpu():Command("ReadMpu") {
     Requires(CommandBase::imu);
     SetInterruptible(false);
     SetRunWhenDisabled(true);
-    CommandBase::imu->UpdateValues();
 }
 
 void ReadMpu::Initialize() {
+    CommandBase::imu->UpdateValues();
 }
 
 void ReadMpu::Execute() {

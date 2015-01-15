@@ -11,20 +11,11 @@
 #include <sys/ioctl.h>
 #include <time.h>
 
+#include "lib-4774/commands/ReadMpu.h"
+
 extern "C" {
 #include "../libs/drop_bone_imu.h"
 }
-
-extern float last_euler[3];
-extern int fd;
-extern signed char gyro_orientation[9];
-
-unsigned long timestamp;
-unsigned char more[0];
-struct pollfd fdset[1];
-char buf[1];
-
-float angles[NOSENTVALS];
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
 	init();
@@ -34,7 +25,17 @@ Mpu6050::~Mpu6050() {
 
 }
 
+void Mpu6050::InitDefaultCommand() {
+  SetDefaultCommand(new ReadMpu());
+}
+
+
+
 int Mpu6050::UpdateValues() {
+  long quat[4];
+  unsigned char more[1];
+  unsigned long timestamp;
+
 	int fifo_read = dmp_read_fifo(gyro, accel, quat, &timestamp, sensors, more);
 	if (fifo_read != 0) {
 		//printf("Error reading fifo.\n");
@@ -48,44 +49,48 @@ int Mpu6050::UpdateValues() {
 	rescale_s(accel, angles+6, ACCEL_SCALE, 3);
 	// turn the quaternation (that is already in angles) into euler angles and store it in the angles array
 	euler(angles+9, angles);
-	//printf("Yaw: %+5.1f\tPitch: %+5.1f\tRoll: %+5.1f\n", angles[0]*180.0/PI, angles[1]*180.0/PI, angles[2]*180.0/PI);
+
 	return 0; //ok
 }
 
 void Mpu6050::euler(float* q, float* euler_angles) {
-    q_multiply(quat_offset, q, q);
-    euler_angles[0] = -atan2(2*q[1]*q[2] - 2*q[0]*q[3], 2*q[0]*q[0] + 2*q[1]*q[1] - 1); // psi, yaw
-    euler_angles[1] = asin(2*q[1]*q[3] + 2*q[0]*q[2]); // phi, pitch
-    euler_angles[2] = -atan2(2*q[2]*q[3] - 2*q[0]*q[1], 2*q[0]*q[0] + 2*q[3]*q[3] - 1); // theta, roll
+    float corrected_q[4] = {0,0,0,0};
+    q_multiply(quat_offset, q, corrected_q);
+    euler_angles[0] = -atan2(2*corrected_q[1]*corrected_q[2] - 2*corrected_q[0]*corrected_q[3], 2*corrected_q[0]*corrected_q[0] + 2*corrected_q[1]*corrected_q[1] - 1); // psi, yaw
+    euler_angles[1] = asin(2*corrected_q[1]*corrected_q[3] + 2*corrected_q[0]*corrected_q[2]); // phi, pitch
+    euler_angles[2] = -atan2(2*corrected_q[2]*corrected_q[3] - 2*corrected_q[0]*corrected_q[1], 2*corrected_q[0]*corrected_q[0] + 2*corrected_q[3]*corrected_q[3] - 1); // theta, roll
 }
 
 void Mpu6050::Zero() {
-	memcpy(quat_offset, quat, 4);
+  quat_offset[0] = angles[9];
+  for (int i=1; i < 4; ++i) {
+    quat_offset[i] = -angles[i+9];
+  }
+  euler(angles+9, angles);
 }
 
 float Mpu6050::GetXAccel() {
-	return accel[0];
+	return angles[6];
 }
 
 float Mpu6050::GetYAccel() {
-	return accel[1];
+	return angles[7];
 }
 
 float Mpu6050::GetZAccel() {
-	return accel[2];
+	return angles[8];
 }
 
 float Mpu6050::GetXGyro() {
-	return gyro[0];
-
+	return angles[3];
 }
 
 float Mpu6050::GetYGyro() {
-	return gyro[1];
+	return angles[4];
 }
 
 float Mpu6050::GetZGyro() {
-	return gyro[2];
+	return angles[5];
 }
 
 float Mpu6050::GetRoll() {
