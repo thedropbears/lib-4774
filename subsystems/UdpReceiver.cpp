@@ -22,9 +22,8 @@ void UdpReceiver::receivePacket() {
     int received_bytes = -1;
     if(broadcastable)
         received_bytes = recvfrom(sock, recv_buffer, BUFFSIZE, 0, NULL, NULL);
-    int parse_flag;
     if(received_bytes != -1){
-        parse_flag = parsePacket(recv_buffer, received_bytes);
+        parsePacket(recv_buffer, received_bytes);
         noPacketCount = 0;
     }
     else
