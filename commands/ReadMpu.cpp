@@ -1,13 +1,15 @@
 #include "ReadMpu.h"
 
-ReadMpu::ReadMpu():Command("ReadMpu") {
-    Requires(CommandBase::imu);
+ReadMpu::ReadMpu(Mpu6050 *imu):Command("ReadMpu") {
+    Requires(imu);
     SetInterruptible(false);
     SetRunWhenDisabled(true);
+    this->imu = imu;
 }
 
 void ReadMpu::Initialize() {
-    CommandBase::imu->UpdateValues();
+
+    imu->UpdateValues();
 }
 
 void ReadMpu::Execute() {

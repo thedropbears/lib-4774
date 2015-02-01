@@ -14,7 +14,7 @@
 // the amount that the IMU Euler values have to change less than to indicate that calibration has finished
 #define THRESHOLD (0.1*PI/180.0)
 
-class Mpu6050: public Subsystem {
+class Mpu6050: public Subsystem, public PIDSource {
 public:
 	// get information that we are getting from the mpu
 	Mpu6050(); //initialize
@@ -40,6 +40,7 @@ public:
 
 	int UpdateValues(); //
 	void Zero(); //reset the quaternion offset
+	double PIDGet();
 
 
 private:

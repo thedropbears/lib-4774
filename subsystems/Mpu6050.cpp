@@ -26,12 +26,14 @@ Mpu6050::~Mpu6050() {
 }
 
 void Mpu6050::InitDefaultCommand() {
-  SetDefaultCommand(new ReadMpu());
+    SetDefaultCommand(new ReadMpu(this));
+    SmartDashboard::PutString("Initialising default command", "");
 }
 
 
 
 int Mpu6050::UpdateValues() {
+    SmartDashboard::PutString("updating values", "");
   long quat[4];
   unsigned char more[1];
   unsigned long timestamp;
@@ -102,7 +104,7 @@ float Mpu6050::GetPitch() {
 }
 
 float Mpu6050::GetYaw() {
-	return angles[0];
+    return angles[0];
 }
 
 float* Mpu6050::GetAccel() {
@@ -115,4 +117,8 @@ float* Mpu6050::GetGyro() {
 
 float* Mpu6050::GetEuler() {
 	return angles;
+}
+
+double Mpu6050::PIDGet() {
+    return static_cast<double>(GetYaw());
 }

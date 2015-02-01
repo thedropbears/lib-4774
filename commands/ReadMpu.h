@@ -9,13 +9,14 @@
 
 class ReadMpu: public Command {
     public:
-        ReadMpu();
+        ReadMpu(Mpu6050 *imu);
         virtual void Initialize();
         virtual void Execute();
         virtual bool IsFinished();
         virtual void End();
         virtual void Interrupted();
     private:
+        Mpu6050 *imu;
 };
 
 #endif
