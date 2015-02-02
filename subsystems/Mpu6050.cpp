@@ -27,7 +27,6 @@ Mpu6050::~Mpu6050() {
 
 void Mpu6050::InitDefaultCommand() {
     SetDefaultCommand(new ReadMpu(this));
-    SmartDashboard::PutString("Initialising default command", "");
 }
 
 
