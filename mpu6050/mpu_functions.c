@@ -1,4 +1,4 @@
-#include "drop_bone_imu.h"
+#include "mpu_functions.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/i2c-dev.h>

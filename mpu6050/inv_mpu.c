@@ -24,7 +24,7 @@
 #include <math.h>
 #include "inv_mpu.h"
 
-#include "drop_bone_imu.h"
+#include "mpu_functions.h"
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,

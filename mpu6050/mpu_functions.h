@@ -1,5 +1,5 @@
-#ifndef drop_bone_imu_h
-#define drop_bone_imu_h
+#ifndef mpu_functions_h
+#define mpu_functions_h
 
 #define MPU6050 // The Invensense Motion Driver code needs this
 
@@ -10,14 +10,10 @@
 
 #define DEFAULT_MPU_HZ 10
 
-#define PI 3.14159
-#define QUAT_SCALE (1.0/1073741824)
-
-#define GYRO_SCALE (PI/(180.0*16.384))
-
-#define ACCEL_SCALE (1.0/16384)
-
-#define NOSENTVALS 13 // the numver of values to be sent through UDP
+#include "math.h"
+#define QUAT_SCALE (1.0/1073741824.0)
+#define GYRO_SCALE (M_PI/(180.0*16.384))
+#define ACCEL_SCALE (1.0/16384.0)
 
 #include "inv_mpu_dmp_motion_driver.h"
 #include "inv_mpu.h"
@@ -55,9 +51,6 @@ int rescale_s(short* input, float* output, float scale_factor, char length);
 void delay_ms(unsigned long num_ms);
 void get_ms(unsigned long *count);
 void reg_int_cb(struct int_param_s *);
-
-void parse_args(int argc, char** argv);
-void print_usage();
 
 inline int min ( int a, int b );
 inline void __no_operation();

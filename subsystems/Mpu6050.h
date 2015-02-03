@@ -7,12 +7,6 @@
 #define PORT 0
 #define MPU6050_ADDR 0x68
 #define MPU6050_WHO_AM_I 0x75
-// scale factors for the data received from the imu
-#define QUAT_SCALE (1.0/1073741824)
-#define GYRO_SCALE (PI/(180.0*16.384))
-#define ACCEL_SCALE (1.0/16384)
-// the amount that the IMU Euler values have to change less than to indicate that calibration has finished
-#define THRESHOLD (0.1*PI/180.0)
 
 class Mpu6050: public Subsystem, public PIDSource {
 public:

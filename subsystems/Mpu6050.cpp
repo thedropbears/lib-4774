@@ -14,7 +14,7 @@
 #include "lib-4774/commands/ReadMpu.h"
 
 extern "C" {
-#include "../libs/drop_bone_imu.h"
+#include "../mpu6050/mpu_functions.h"
 }
 
 Mpu6050::Mpu6050(): Subsystem("Mpu6050"){
