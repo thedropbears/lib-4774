@@ -1,5 +1,5 @@
 #include "Functions.h"
-#include "math.h"
+#include <cmath>
 
 namespace lib4774{
 	float scaleJoystick (float joystick_value, float exponential, float deadzone)
@@ -20,5 +20,12 @@ namespace lib4774{
 	    } else {
 	        return vX*sin(yaw_angle)+vY*cos(yaw_angle);
 	    }
+	}
+
+	float r2d(float r) {
+		return r/M_PI*180.0;
+	}
+	float d2r(float d) {
+		return d*M_PI/180.0;
 	}
 }
