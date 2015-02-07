@@ -14,12 +14,11 @@ namespace lib4774{
 		return joystick_scaled;
 	}
 
-	float fieldOrient (lib4774::joystick_axis axis, float yaw_angle, float vX, float vY) {
-	    if(axis == lib4774::joystick_axis::X) {
-	        return vX*cos(yaw_angle)-vY*sin(yaw_angle);
-	    } else {
-	        return vX*sin(yaw_angle)+vY*cos(yaw_angle);
-	    }
+	double* fieldOrient (float yaw_angle, double* to_orient) {
+		double tempVX = to_orient[0];
+		to_orient[0] = to_orient[0]*cos(yaw_angle)-to_orient[1]*sin(yaw_angle);
+		to_orient[1] = tempVX*sin(yaw_angle)+to_orient[1]*cos(yaw_angle);
+	    return to_orient;
 	}
 
 	float r2d(float r) {
