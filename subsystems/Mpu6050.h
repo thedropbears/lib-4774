@@ -11,7 +11,7 @@
 class Mpu6050: public Subsystem, public PIDSource {
 public:
 	// get information that we are getting from the mpu
-	Mpu6050(); //initialize
+	Mpu6050(I2C::Port); //initialize
 	~Mpu6050();
 
 	void InitDefaultCommand();
@@ -36,6 +36,7 @@ public:
 	void Zero(); //reset the quaternion offset
 	double PIDGet();
 
+    static I2C* i2c;
 
 private:
 	//euler is roll, pitch, yaw, other two are x, y, z

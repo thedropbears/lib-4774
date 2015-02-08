@@ -3,8 +3,6 @@
 
 #define MPU6050 // The Invensense Motion Driver code needs this
 
-#define BBB_I2C_FILE "/dev/i2c-2"
-
 #define MPU6050_ADDR 0x68
 #define MPU6050_WHO_AM_I 0x75
 
@@ -42,8 +40,6 @@ int i2c_write(unsigned char slave_addr, unsigned char reg_addr,
 int i2c_read(unsigned char slave_addr, unsigned char reg_addr,
         unsigned char length, unsigned char *data);
 
-int open_bus();
-
 int q_multiply(float* q1, float* q2, float* result); // multiply two quaternions together {w, x, y, z}
 
 int rescale_l(long* input, float* output, float scale_factor, char length);
@@ -58,7 +54,5 @@ inline void __no_operation();
 // Functions for setting gyro/accel orientation
 unsigned short inv_row_2_scale(const signed char *row);
 unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx);
-
-void advance_spinner();
 
 #endif
