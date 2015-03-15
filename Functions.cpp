@@ -2,7 +2,7 @@
 #include <cmath>
 
 namespace lib4774{
-	float scaleJoystick (float joystick_value, float exponential, float deadzone)
+	float scaleJoystick (float joystick_value, float exponential, float deadzone, float scale)
 	{
 		double a = log(exponential+1)/(1-deadzone);
 		float joystick_scaled = 0;
@@ -11,7 +11,7 @@ namespace lib4774{
 		} else if (joystick_value < -deadzone){
 			joystick_scaled = -(exp(a*-(joystick_value + deadzone))-1)/exponential;
 		}
-		return joystick_scaled;
+		return (joystick_scaled*scale);
 	}
 
 	void fieldOrient (float vX, float vY, float yaw_angle, double* result) {
