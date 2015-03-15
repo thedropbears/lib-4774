@@ -20,8 +20,12 @@ int i2c_read(unsigned char slave_addr, unsigned char reg_addr,
     return Mpu6050::i2c->Transaction(&reg_addr, 1, data, length);
 }
 
-Mpu6050::Mpu6050(I2C::Port port): Subsystem("Mpu6050"){
+Mpu6050::Mpu6050(I2C::Port port, DigitalInput* di): Subsystem("Mpu6050"){
+	this->di = di;
     i2c = new I2C(port, MPU6050_ADDR);
+    if(di != NULL) {
+    	interrupt = new InterruptTrigger(di);
+    }
     init();
 }
 
@@ -30,7 +34,9 @@ Mpu6050::~Mpu6050() {
 }
 
 void Mpu6050::InitDefaultCommand() {
-    SetDefaultCommand(new ReadMpu(this));
+	if(di == NULL) {
+		SetDefaultCommand(new ReadMpu(this));
+	}
 }
 
 

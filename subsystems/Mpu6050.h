@@ -3,6 +3,8 @@
 
 #include <WPILib.h>
 
+#include "../commands/InterruptTrigger.h"
+
 #define MPU6050 //imu driver needs this
 #define PORT 0
 #define MPU6050_ADDR 0x68
@@ -11,7 +13,7 @@
 class Mpu6050: public Subsystem, public PIDSource {
 public:
 	// get information that we are getting from the mpu
-	Mpu6050(I2C::Port); //initialize
+	Mpu6050(I2C::Port, DigitalInput* di=NULL); //initialize
 	~Mpu6050();
 
 	void InitDefaultCommand();
@@ -48,5 +50,8 @@ private:
     float angles[13];
 
     void euler(float* q, float* euler_angles);
+
+    DigitalInput* di;
+    InterruptTrigger* interrupt;
 };
 #endif
