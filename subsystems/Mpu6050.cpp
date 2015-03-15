@@ -25,6 +25,7 @@ Mpu6050::Mpu6050(I2C::Port port, DigitalInput* di): Subsystem("Mpu6050"){
     i2c = new I2C(port, MPU6050_ADDR);
     if(di != NULL) {
     	interrupt = new InterruptTrigger(di);
+    	interrupt->WhenActive(new ReadMpu(this));
     }
     init();
 }
